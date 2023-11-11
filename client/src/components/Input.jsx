@@ -1,4 +1,4 @@
-const Input = ({ type, placeholder, value, name, handleChange }) => {
+const Input = ({ type, placeholder, value, name, onChange }) => {
   return (
     <input
       type={type}
@@ -7,7 +7,7 @@ const Input = ({ type, placeholder, value, name, handleChange }) => {
       name={name}
       step="0.00001"
       onChange={(e) => {
-        handleChange(e);
+        onChange(e, name);
       }}
       className="w-full my-2 rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
     />

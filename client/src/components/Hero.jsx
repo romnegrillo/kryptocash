@@ -1,14 +1,33 @@
-import { AiFillPlayCircle } from 'react-icons/ai';
+import { useContext } from 'react';
+
 import { SiEthereum } from 'react-icons/si';
 import { BsInfoCircle } from 'react-icons/bs';
 
 import { Input, Loader } from './';
-import { logo } from '../assets/images';
+
+import { TransactionsContext } from '../context/TransactionsContext';
 
 const Hero = () => {
-  const connectWallet = () => {};
+  const {
+    connectWallet,
+    disConnectWallet,
+    currentAccount,
+    formData,
+    handleFormChange,
+    sendTransaction,
+  } = useContext(TransactionsContext);
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const { addressTo, amount, keyword, message } = formData;
+
+    if (!addressTo || !amount || !keyword || !message) {
+      return;
+    }
+
+    sendTransaction();
+  };
 
   return (
     <section className="max-container mx-auto p-8 flex-1 flex lg:flex-row flex-col items-center">
@@ -21,12 +40,23 @@ const Hero = () => {
             Genuine, tamper-proof, and beyond traditional bank flaws.
           </p>
 
-          <button
-            className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
-            onClick={connectWallet}
-          >
-            Connect Wallet
-          </button>
+          {!currentAccount && (
+            <button
+              className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
+              onClick={connectWallet}
+            >
+              Connect Wallet
+            </button>
+          )}
+
+          {currentAccount && (
+            <button
+              className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
+              onClick={disConnectWallet}
+            >
+              Disconnect/Switch Wallet
+            </button>
+          )}
 
           <div className="border border-slate-600 rounded-lg grid md:grid-cols-3 grid-cols-2 mb-16 lg:self-start self-center w-full">
             <div className="text-white border border-slate-600 rounded-tl-md px-4 py-8 text-center">
@@ -62,16 +92,12 @@ const Hero = () => {
             <BsInfoCircle className="text-white w-6 h-6" />
           </div>
 
-          <div className="w-full py-2 px-4 flex flex-col justify-between ">
-            <p className="text-white font-light text-sm">Address</p>
-            <p className="text-white font-semibold ">Ethereum</p>
+          <div className="w-full py-2 px-4 flex flex-col justify-between">
+            <p className="text-white font-semibold ">Ethereum Address:</p>
+            <p className="text-sm text-white font-bold">
+              {currentAccount ? currentAccount : 'Account disconnected'}
+            </p>
           </div>
-
-          <img
-            src={logo}
-            alt="logo"
-            className="absolute w-24 right-4 bottom-4"
-          />
         </div>
 
         <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
@@ -79,25 +105,25 @@ const Hero = () => {
             type="text"
             placeholder="Address To"
             name="addressTo"
-            onChange={() => {}}
+            onChange={handleFormChange}
           />
           <Input
             type="number"
             placeholder="Amount (ETH)"
             name="amount"
-            onChange={() => {}}
+            onChange={handleFormChange}
           />
           <Input
             type="text"
             placeholder="Keyword"
-            name="Keyword"
-            onChange={() => {}}
+            name="keyword"
+            onChange={handleFormChange}
           />
           <Input
             type="text"
             placeholder="Enter Messages"
             name="message"
-            onChange={() => {}}
+            onChange={handleFormChange}
           />
 
           <div className="h-[1px] w-full bg-gray-400 my-2" />

@@ -21,10 +21,6 @@ const Navbar = () => {
             {navLink}
           </li>
         ))}
-
-        <li className="py-2 px-8  border border-slate-500 text-red-400">
-          Wallet Disconnected
-        </li>
       </ul>
 
       {!toggleMenu && (

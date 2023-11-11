@@ -18,8 +18,6 @@ const TransactionsProvider = ({ children }) => {
 
   const checkIfWalletIsConnected = async () => {
     try {
-      if (!ethereum) return alert('Please install Metamask!');
-
       const accounts = await ethereum.request({
         method: 'eth_accounts',
       });
@@ -33,23 +31,23 @@ const TransactionsProvider = ({ children }) => {
         console.log('No accounts found.');
       }
     } catch (error) {
-      console.error(error);
-      throw new Error('No ethereum object detected.');
+      console.log(
+        'Problem detecting ethereum object, please install Metamask.'
+      );
     }
   };
 
   const connectWallet = async () => {
     try {
-      if (!ethereum) return alert('Please install Metamask!');
-
       const accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
 
       setCurrentAccount(accounts[0]);
     } catch (error) {
-      console.error(error);
-      throw new Error('No ethereum object detected.');
+      console.log(
+        'Problem detecting ethereum object, please install Metamask.'
+      );
     }
   };
 
@@ -68,8 +66,9 @@ const TransactionsProvider = ({ children }) => {
     try {
       console.log('Sending transactions...');
     } catch (error) {
-      console.error(error);
-      throw new Error('No ethereum object detected.');
+      console.log(
+        'Problem detecting ethereum object, please install Metamask.'
+      );
     }
   };
 
@@ -78,16 +77,22 @@ const TransactionsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    ethereum.on('accountsChanged', (accounts) => {
-      if (accounts.length > 0) {
-        setCurrentAccount(accounts[0]);
+    try {
+      ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
+          setCurrentAccount(accounts[0]);
 
-        console.log('Metamask account changed.');
-        console.log(accounts[0]);
-      } else {
-        setCurrentAccount(null);
-      }
-    });
+          console.log('Metamask account changed.');
+          console.log(accounts[0]);
+        } else {
+          setCurrentAccount(null);
+        }
+      });
+    } catch (error) {
+      console.log(
+        'Problem detecting ethereum object, please install Metamask.'
+      );
+    }
 
     // Clean up the event listener
     return () => ethereum.removeListener('accountsChanged');

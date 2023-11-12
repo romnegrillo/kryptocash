@@ -11,8 +11,11 @@ const Navbar = () => {
 
   return (
     <nav className="max-container mx-auto p-8 flex justify-between items-center">
-      <div className="w-48 cursor-pointer">
-        <img src={logo} alt="logo" className="w-full" />
+      <div className="flex justify-center items-center text-white  cursor-pointer">
+        <div className="w-24">
+          <img src={logo} alt="logo" className="w-full" />
+        </div>
+        <h1 className="text-2xl tracking-widest">KRYPTOCASH</h1>
       </div>
 
       <ul className="justify-center items-center gap-8 font-semibold text-lg text-white lg:flex hidden">

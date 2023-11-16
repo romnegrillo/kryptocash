@@ -1,9 +1,22 @@
 import { useState, useEffect } from 'react';
-
 import { createContext } from 'react';
+import { ethers } from 'ethers';
 import { contractAddress, transactionsAbi } from '../data';
 
 const { ethereum } = window;
+
+const getEthereumContract = async () => {
+  const provider = new ethers.BrowserProvider(ethereum);
+  const signer = await provider.getSigner();
+
+  const transactionsContract = new ethers.Contract(
+    contractAddress,
+    transactionsAbi,
+    signer
+  );
+
+  return transactionsContract;
+};
 
 const TransactionsContext = createContext();
 
@@ -31,9 +44,7 @@ const TransactionsProvider = ({ children }) => {
         console.log('No accounts found.');
       }
     } catch (error) {
-      console.log(
-        'Problem detecting ethereum object, please install Metamask.'
-      );
+      console.log(error);
     }
   };
 
@@ -45,9 +56,7 @@ const TransactionsProvider = ({ children }) => {
 
       setCurrentAccount(accounts[0]);
     } catch (error) {
-      console.log(
-        'Problem detecting ethereum object, please install Metamask.'
-      );
+      console.log(error);
     }
   };
 
@@ -64,11 +73,36 @@ const TransactionsProvider = ({ children }) => {
 
   const sendTransaction = async () => {
     try {
-      console.log('Sending transactions...');
+      const { addressTo, amount, keyword, message } = formData;
+
+      const transactionContract = await getEthereumContract();
+      const parsedAmount = ethers.parseEther(amount);
+
+      await ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: currentAccount,
+            to: addressTo,
+            value: parsedAmount.toString(16),
+            gas: '0x5208',
+          },
+        ],
+      });
+
+      // const transactionHash = await transactionContract.addToBlockchain(
+      //   addressTo,
+      //   parsedAmount,
+      //   keyword,
+      //   message
+      // );
+
+      // console.log('Loading Transaction hash: ', transactionHash);
+      // await transactionHash.wait();
+
+      // console.log('Transaction mined.');
     } catch (error) {
-      console.log(
-        'Problem detecting ethereum object, please install Metamask.'
-      );
+      console.log(error);
     }
   };
 
@@ -89,9 +123,7 @@ const TransactionsProvider = ({ children }) => {
         }
       });
     } catch (error) {
-      console.log(
-        'Problem detecting ethereum object, please install Metamask.'
-      );
+      console.log(error);
     }
 
     // Clean up the event listener

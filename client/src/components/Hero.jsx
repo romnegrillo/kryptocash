@@ -54,7 +54,7 @@ const Hero = () => {
               className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
               onClick={disConnectWallet}
             >
-              Disconnect/Switch Wallet
+              Disconnect/Switch MetaMask
             </button>
           )}
 

@@ -28,6 +28,10 @@ const TransactionsProvider = ({ children }) => {
     keyword: '',
     message: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [transactionCount, setTransactionCount] = useState(
+    localStorage.getItem('transactionCount')
+  );
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -90,17 +94,22 @@ const TransactionsProvider = ({ children }) => {
         ],
       });
 
-      // const transactionHash = await transactionContract.addToBlockchain(
-      //   addressTo,
-      //   parsedAmount,
-      //   keyword,
-      //   message
-      // );
+      const transactionHash = await transactionContract.addToBlockchain(
+        addressTo,
+        parsedAmount,
+        keyword,
+        message
+      );
 
-      // console.log('Loading Transaction hash: ', transactionHash);
-      // await transactionHash.wait();
+      console.log('Loading Transaction hash: ', transactionHash.hash);
+      setIsLoading(true);
+      await transactionHash.wait();
 
-      // console.log('Transaction mined.');
+      console.log('Transaction success.');
+      setIsLoading(false);
+
+      const transactionCount = await transactionContract.getTransactionCount();
+      setTransactionCount(Number(transactionCount));
     } catch (error) {
       console.log(error);
     }

@@ -58,4 +58,3 @@ const ServiceCard = ({ title, subTitle, icon, color }) => {
   );
 };
 export default Services;
-

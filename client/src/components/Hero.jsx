@@ -1,11 +1,10 @@
 import { useContext } from 'react';
-
 import { SiEthereum } from 'react-icons/si';
 import { BsInfoCircle } from 'react-icons/bs';
 
 import { Input, Loader } from './';
-
 import { TransactionsContext } from '../context/TransactionsContext';
+import shortenAddress from '../utils/shortenAddress';
 
 const Hero = () => {
   const {
@@ -54,7 +53,7 @@ const Hero = () => {
               className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
               onClick={disConnectWallet}
             >
-              Disconnect/Switch MetaMask
+              {shortenAddress(currentAccount)}
             </button>
           )}
 
@@ -93,9 +92,13 @@ const Hero = () => {
           </div>
 
           <div className="w-full py-2 px-4 flex flex-col justify-between">
-            <p className="text-white font-semibold ">Ethereum Address:</p>
+            <p className="text-white font-semibold ">
+              Ethereum MetaMask Address:
+            </p>
             <p className="text-sm text-white font-bold">
-              {currentAccount ? currentAccount : 'Account disconnected'}
+              {currentAccount
+                ? shortenAddress(currentAccount)
+                : 'Account disconnected'}
             </p>
           </div>
         </div>
@@ -133,7 +136,7 @@ const Hero = () => {
           ) : (
             <button
               onClick={handleSubmit}
-              className="text-white  w-full mt-2 border-[1px] py-2 px-8 border-[#3d4f7c] rounded-full cursor-pointer font-semibold flex items-center justify-center"
+              className="text-white  w-full mt-2 border-[1px] py-2 px-8 border-[#3d4f7c] rounded-full cursor-pointer font-semibold flex items-center justify-center hover:bg-[#2952e3]"
             >
               Send Now
             </button>

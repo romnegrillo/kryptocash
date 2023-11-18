@@ -29,6 +29,7 @@ const TransactionsProvider = ({ children }) => {
     message: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem('transactionCount')
   );
@@ -41,6 +42,7 @@ const TransactionsProvider = ({ children }) => {
 
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
+        getAllTransactions();
 
         console.log('Currently connected account.');
         console.log(accounts[0]);
@@ -75,6 +77,35 @@ const TransactionsProvider = ({ children }) => {
     }));
   };
 
+  const checkIfTransactionsExist = async () => {
+    const transactionContract = await getEthereumContract();
+    const transactionCount = await transactionContract.getTransactionCount();
+
+    setTransactionCount(Number(transactionCount));
+
+    return Number(transactionCount);
+  };
+
+  const getAllTransactions = async () => {
+    if (!(await checkIfTransactionsExist())) return;
+
+    const transactionContract = await getEthereumContract();
+    const transactions = await transactionContract.getAllTransactions();
+
+    const structuredTransactions = transactions.map((transaction) => ({
+      addressFrom: transaction.sender,
+      addressTo: transaction.receiver,
+      amount: ethers.formatEther(transaction.amount),
+      message: transaction.message,
+      timestamp: new Date(Number(transaction.timestamp) * 1000),
+      keyword: transaction.keyword,
+    }));
+
+    console.log(structuredTransactions);
+
+    setTransactions(structuredTransactions);
+  };
+
   const sendTransaction = async () => {
     try {
       const { addressTo, amount, keyword, message } = formData;
@@ -88,7 +119,7 @@ const TransactionsProvider = ({ children }) => {
           {
             from: currentAccount,
             to: addressTo,
-            value: parsedAmount.toString(16),
+            value: parsedAmount.toString(),
             gas: '0x5208',
           },
         ],
@@ -124,6 +155,7 @@ const TransactionsProvider = ({ children }) => {
       ethereum.on('accountsChanged', (accounts) => {
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
+          checkIfWalletIsConnected();
 
           console.log('Metamask account changed.');
           console.log(accounts[0]);
@@ -148,6 +180,7 @@ const TransactionsProvider = ({ children }) => {
         sendTransaction,
         formData,
         handleFormChange,
+        transactions,
       }}
     >
       {children}

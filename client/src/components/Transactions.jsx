@@ -30,7 +30,7 @@ const TransactionList = () => {
       <h3 className="text-white text-center  text-5xl mb-8">
         Your Latest Transactions
       </h3>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 justify-items-center">
         {dummyData.map((transaction) => (
           <TransactionCard transaction={transaction} key={transaction.id} />
         ))}
@@ -84,4 +84,3 @@ const TransactionCard = ({ transaction }) => {
 };
 
 export default Transactions;
-

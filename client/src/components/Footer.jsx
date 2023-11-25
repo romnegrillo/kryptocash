@@ -1,30 +1,30 @@
-import { logo } from '../assets/images';
+import { logo } from "../assets/images";
 
 const Footer = () => {
   return (
     <footer className="gradient-bg-footer p-4 pb-20">
       <div className="container mx-auto">
         <div className="border-t-2"></div>
-        <div className="flex md:flex-row flex-col items-center p-4 justify-evenly mb-4 md:mb-0">
-          <div className="flex md:flex-[0.5] justify-center md:justify-start md:items-center">
+        <div className="mb-4 flex flex-col items-center justify-evenly p-4 md:mb-0 md:flex-row">
+          <div className="flex justify-center md:flex-[0.5] md:items-center md:justify-start">
             <img src={logo} alt="logo" className="w-32" />
           </div>
-          <div className="flex-1 flex justify-between gap-16">
-            <p className="text-white text-lg font-semibold cursor-pointer">
+          <div className="flex flex-1 justify-between gap-16">
+            <p className="cursor-pointer text-lg font-semibold text-white">
               Home
             </p>
-            <p className="text-white text-lg font-semibold cursor-pointer">
+            <p className="cursor-pointer text-lg font-semibold text-white">
               Transactions
             </p>
-            <p className="text-white text-lg font-semibold cursor-pointer">
+            <p className="cursor-pointer text-lg font-semibold text-white">
               Services
             </p>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center justify-center">
           <p className="text-white">
-            Come join us @{' '}
-            <span className="underline cursor-pointer">
+            Come join us @{" "}
+            <span className="cursor-pointer underline">
               inquriy@kryptocash.com
             </span>
           </p>

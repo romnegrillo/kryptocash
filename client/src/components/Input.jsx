@@ -9,7 +9,7 @@ const Input = ({ type, placeholder, value, name, onChange }) => {
       onChange={(e) => {
         onChange(e, name);
       }}
-      className="w-full my-2 rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+      className="white-glassmorphism my-2 w-full rounded-lg border-none bg-transparent px-4 py-2 text-sm text-white outline-none"
     />
   );
 };

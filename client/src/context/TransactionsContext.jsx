@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { createContext } from 'react';
-import { ethers } from 'ethers';
-import { contractAddress, transactionsAbi } from '../data';
+import { useState, useEffect } from "react";
+import { createContext } from "react";
+import { ethers } from "ethers";
+import { contractAddress, transactionsAbi } from "../data";
 
 const { ethereum } = window;
 
@@ -12,7 +12,7 @@ const getEthereumContract = async () => {
   const transactionsContract = new ethers.Contract(
     contractAddress,
     transactionsAbi,
-    signer
+    signer,
   );
 
   return transactionsContract;
@@ -23,31 +23,31 @@ const TransactionsContext = createContext();
 const TransactionsProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState(null);
   const [formData, setFormData] = useState({
-    addressTo: '',
-    amount: '',
-    keyword: '',
-    message: '',
+    addressTo: "",
+    amount: "",
+    keyword: "",
+    message: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [transactionCount, setTransactionCount] = useState(
-    localStorage.getItem('transactionCount')
+    localStorage.getItem("transactionCount"),
   );
 
   const checkIfWalletIsConnected = async () => {
     try {
       const accounts = await ethereum.request({
-        method: 'eth_accounts',
+        method: "eth_accounts",
       });
 
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
         getAllTransactions();
 
-        console.log('Currently connected account.');
+        console.log("Currently connected account.");
         console.log(accounts[0]);
       } else {
-        console.log('No accounts found.');
+        console.log("No accounts found.");
       }
     } catch (error) {
       console.log(error);
@@ -57,7 +57,7 @@ const TransactionsProvider = ({ children }) => {
   const connectWallet = async () => {
     try {
       const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
+        method: "eth_requestAccounts",
       });
 
       setCurrentAccount(accounts[0]);
@@ -67,7 +67,7 @@ const TransactionsProvider = ({ children }) => {
   };
 
   const disConnectWallet = async () => {
-    return alert('To disconnect or switch account, please do it on Metamask.');
+    return alert("To disconnect or switch account, please do it on Metamask.");
   };
 
   const handleFormChange = (e, name) => {
@@ -108,35 +108,44 @@ const TransactionsProvider = ({ children }) => {
 
   const sendTransaction = async () => {
     try {
+      console.log("Form data: ", formData);
+
       const { addressTo, amount, keyword, message } = formData;
 
       const transactionContract = await getEthereumContract();
       const parsedAmount = ethers.parseEther(amount);
 
-      await ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [
-          {
-            from: currentAccount,
-            to: addressTo,
-            value: parsedAmount.toString(),
-            gas: '0x5208',
-          },
-        ],
+      console.log("Parsed amount: ", parsedAmount);
+
+      // await ethereum.request({
+      //   method: "eth_sendTransaction",
+      //   params: [
+      //     {
+      //       from: currentAccount,
+      //       to: addressTo,
+      //       value: parsedAmount,
+      //       gas: "0x5208",
+      //     },
+      //   ],
+      // });
+
+      await signer.sendTransaction({
+        to: addressTo,
+        value: parsedAmount,
       });
 
       const transactionHash = await transactionContract.addToBlockchain(
         addressTo,
         parsedAmount,
         keyword,
-        message
+        message,
       );
 
-      console.log('Loading Transaction hash: ', transactionHash.hash);
+      console.log("Loading Transaction hash: ", transactionHash.hash);
       setIsLoading(true);
       await transactionHash.wait();
 
-      console.log('Transaction success.');
+      console.log("Transaction success.");
       setIsLoading(false);
 
       const transactionCount = await transactionContract.getTransactionCount();
@@ -152,12 +161,12 @@ const TransactionsProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      ethereum.on('accountsChanged', (accounts) => {
+      ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
           checkIfWalletIsConnected();
 
-          console.log('Metamask account changed.');
+          console.log("Metamask account changed.");
           console.log(accounts[0]);
         } else {
           setCurrentAccount(null);
@@ -168,7 +177,7 @@ const TransactionsProvider = ({ children }) => {
     }
 
     // Clean up the event listener
-    return () => ethereum.removeListener('accountsChanged');
+    return () => ethereum.removeListener("accountsChanged");
   }, []);
 
   return (

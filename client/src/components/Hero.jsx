@@ -1,10 +1,10 @@
-import { useContext } from 'react';
-import { SiEthereum } from 'react-icons/si';
-import { BsInfoCircle } from 'react-icons/bs';
+import { useContext } from "react";
+import { SiEthereum } from "react-icons/si";
+import { BsInfoCircle } from "react-icons/bs";
 
-import { Input, Loader } from './';
-import { TransactionsContext } from '../context/TransactionsContext';
-import shortenAddress from '../utils/shortenAddress';
+import { Input, Loader } from "./";
+import { TransactionsContext } from "../context/TransactionsContext";
+import shortenAddress from "../utils/shortenAddress";
 
 const Hero = () => {
   const {
@@ -29,19 +29,19 @@ const Hero = () => {
   };
 
   return (
-    <section className="max-container mx-auto p-8 flex-1 flex lg:flex-row flex-col items-center">
-      <div className="flex-1 flex justify-center">
-        <div className=" flex flex-col items-start justify-start md:w-auto w-[full]">
-          <h1 className="text-white text-5xl mb-4">
+    <section className="max-container padding-x padding-y h-screen-minus-navbar mx-auto flex flex-1 flex-col items-center justify-center lg:flex-row">
+      <div className="flex w-full flex-1 justify-center">
+        <div className=" flex w-[full] flex-col items-start justify-start md:w-auto">
+          <h1 className="mb-4 text-5xl text-white">
             Send Crypto <br /> and a message <br /> across the world.
           </h1>
-          <p className="text-white mb-12">
+          <p className="mb-12 text-white">
             Genuine, tamper-proof, and beyond traditional bank flaws.
           </p>
 
           {!currentAccount && (
             <button
-              className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
+              className="mb-12 block w-full cursor-pointer rounded-full bg-[#2952e3] px-8 py-4 font-bold text-white hover:bg-[#2546bd] lg:hidden"
               onClick={connectWallet}
             >
               Connect Wallet
@@ -50,60 +50,60 @@ const Hero = () => {
 
           {currentAccount && (
             <button
-              className="bg-[#2952e3] py-4 px-8 font-bold rounded-full cursor-pointer hover:bg-[#2546bd] text-white mb-12 w-full"
+              className="mb-12 block w-full cursor-pointer rounded-full bg-[#2952e3] px-8 py-4 font-bold text-white hover:bg-[#2546bd] lg:hidden"
               onClick={disConnectWallet}
             >
               {shortenAddress(currentAccount)}
             </button>
           )}
 
-          <div className="border border-slate-600 rounded-lg grid md:grid-cols-3 grid-cols-2 mb-16 lg:self-start self-center w-full">
-            <div className="text-white border border-slate-600 rounded-tl-md px-4 py-8 text-center">
+          <div className="mb-16 grid w-full grid-cols-2 self-center rounded-lg border border-slate-600 md:grid-cols-3 lg:self-start">
+            <div className="rounded-tl-md border border-slate-600 px-4 py-8 text-center text-white">
               Reliability
             </div>
-            <div className="text-white border  border-slate-600 px-4 py-8 text-center">
+            <div className="border border-slate-600  px-4 py-8 text-center text-white">
               Security
             </div>
-            <div className="text-white border  border-slate-600 rounded-tr px-4 py-8 text-center">
+            <div className="rounded-tr border  border-slate-600 px-4 py-8 text-center text-white">
               Ethereum
             </div>
 
-            <div className="text-white border  border-slate-600 rounded-bl px-4 py-8 text-center">
+            <div className="rounded-bl border  border-slate-600 px-4 py-8 text-center text-white">
               Web 3.0
             </div>
-            <div className="text-white border  border-slate-600 px-4 py-8 text-center">
+            <div className="border border-slate-600  px-4 py-8 text-center text-white">
               Low Fees
             </div>
-            <div className="text-white border  border-slate-600 rounded-br px-4 py-8 text-center">
+            <div className="rounded-br border  border-slate-600 px-4 py-8 text-center text-white">
               Blockchain
             </div>
           </div>
         </div>
       </div>
 
-      <div className="relative flex flex-1 flex-col items-center py-8">
-        <div className="h-[230px] w-96 rounded-lg eth-card white-glassmorphism flex flex-col justify-between mb-12">
-          <div className="h-10 w-full py-2 px-4 flex justify-between ">
-            <div className="flex justify-center items-center w-12 h-12 border rounded-full p-2">
-              <SiEthereum className="text-white w-12 h-12" />
+      <div className="relative flex w-full flex-1 flex-col items-center">
+        <div className="eth-card white-glassmorphism mb-12 flex h-[230px] w-full  max-w-md flex-col justify-between rounded-lg border md:w-96">
+          <div className="flex h-10 w-full justify-between px-4 py-2 ">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border p-2">
+              <SiEthereum className="h-12 w-12 text-white" />
             </div>
 
-            <BsInfoCircle className="text-white w-6 h-6" />
+            <BsInfoCircle className="h-6 w-6 text-white" />
           </div>
 
-          <div className="w-full py-2 px-4 flex flex-col justify-between">
-            <p className="text-white font-semibold ">
+          <div className="flex w-full flex-col justify-between px-4 py-2">
+            <p className="font-semibold text-white ">
               Ethereum MetaMask Address:
             </p>
-            <p className="text-sm text-white font-bold">
+            <p className="text-sm font-bold text-white">
               {currentAccount
                 ? shortenAddress(currentAccount)
-                : 'Account disconnected'}
+                : "Account disconnected"}
             </p>
           </div>
         </div>
 
-        <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+        <div className="blue-glassmorphism flex w-full max-w-md flex-col items-center justify-start p-5 md:w-96">
           <Input
             type="text"
             placeholder="Address To"
@@ -129,14 +129,14 @@ const Hero = () => {
             onChange={handleFormChange}
           />
 
-          <div className="h-[1px] w-full bg-gray-400 my-2" />
+          <div className="my-2 h-[1px] w-full bg-gray-400" />
 
           {false ? (
             <Loader />
           ) : (
             <button
               onClick={handleSubmit}
-              className="text-white  w-full mt-2 border-[1px] py-2 px-8 border-[#3d4f7c] rounded-full cursor-pointer font-semibold flex items-center justify-center hover:bg-[#2952e3]"
+              className="mt-2  flex w-full cursor-pointer items-center justify-center rounded-full border-[1px] border-[#3d4f7c] px-8 py-2 font-semibold text-white hover:bg-[#2952e3]"
             >
               Send Now
             </button>

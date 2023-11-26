@@ -9,6 +9,7 @@ const TransactionsProvider = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [currentAccount, setCurrentAccount] = useState("");
+  const [currentEthBalance, setCurrentEthBalance] = useState(0);
   const [contract, setContract] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const TransactionsProvider = ({ children }) => {
     keyword: "",
     message: "",
   });
+
+  console.log(currentEthBalance);
 
   // Connect to Metamask.
   const connectWallet = async () => {
@@ -28,6 +31,7 @@ const TransactionsProvider = ({ children }) => {
         });
         const account = accounts[0];
         setCurrentAccount(account);
+        updateBalance();
         initializeEthers();
       } catch (error) {
         console.error("Error connecting to Metamask", error);
@@ -42,6 +46,7 @@ const TransactionsProvider = ({ children }) => {
     setProvider(null);
     setSigner(null);
     setCurrentAccount(null);
+    updateBalance(0);
     setContract(null);
 
     alert("To full disconnect your wallet, do it in MetaMask.");
@@ -101,16 +106,22 @@ const TransactionsProvider = ({ children }) => {
     const parsedAmount = ethers.parseEther(amount); // ETH to Wei.
 
     try {
-      await signer.sendTransaction({
-        to: addressTo,
-        value: parsedAmount,
-      });
+      // On old smart contract, the sending of transaction is not included.
+      // It is a separate function call on Metamask it self.
+      // I already updated the smart contract to include this so it won't be used.
+      // await signer.sendTransaction({
+      //   to: addressTo,
+      //   value: parsedAmount,
+      // });
 
       const transactionHash = await contract.addToBlockchain(
         addressTo,
         parsedAmount,
-        keyword,
         message,
+        keyword,
+        {
+          value: parsedAmount, // Specify the ETH amount to be sent
+        },
       );
 
       console.log("Loading Transaction hash: ", transactionHash.hash);
@@ -136,6 +147,35 @@ const TransactionsProvider = ({ children }) => {
     }
   };
 
+  // Update ETH balance.
+  const updateBalance = async () => {
+    if (window.ethereum) {
+      try {
+        // Request account access if needed
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        const account = accounts[0];
+
+        // Fetch the balance in Wei
+        const balanceWei = await window.ethereum.request({
+          method: "eth_getBalance",
+          params: [account, "latest"],
+        });
+
+        // Convert Wei to Ether
+        const balanceEth = parseInt(balanceWei, 16) / 1e18;
+
+        // Update the state with the new balance
+        setCurrentEthBalance(balanceEth.toString());
+      } catch (error) {
+        console.error("Error updating balance: ", error);
+      }
+    } else {
+      console.log("Please install MetaMask!");
+    }
+  };
+
   // Handle form change.
   const handleFormChange = (e, name) => {
     setFormData((prevFormData) => ({
@@ -151,6 +191,7 @@ const TransactionsProvider = ({ children }) => {
         // Added async
         if (accounts.length > 0) {
           setCurrentAccount(accounts[0]);
+          updateBalance();
           await initializeEthers(); // Await initializeEthers.
         } else {
           disConnectWallet();
@@ -173,6 +214,7 @@ const TransactionsProvider = ({ children }) => {
           });
           if (accounts.length > 0) {
             setCurrentAccount(accounts[0]);
+            updateBalance();
             initializeEthers();
           }
         } catch (error) {
@@ -187,6 +229,7 @@ const TransactionsProvider = ({ children }) => {
     window.ethereum?.on("accountsChanged", (accounts) => {
       if (accounts.length > 0) {
         setCurrentAccount(accounts[0]);
+        updateBalance();
         initializeEthers();
       } else {
         disConnectWallet();
@@ -214,6 +257,7 @@ const TransactionsProvider = ({ children }) => {
         currentAccount,
         sendTransaction,
         formData,
+        currentEthBalance,
         handleFormChange,
         transactions,
         getAllTransactions,

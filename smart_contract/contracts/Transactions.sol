@@ -18,7 +18,10 @@ contract Transactions {
 
     TransferStruct[] transactions;
 
-    function addToBlockchain(address payable receiver, uint amount, string memory message, string memory keyword) public {
+    function addToBlockchain(address payable receiver, uint amount, string memory message, string memory keyword) public payable {
+        require(msg.value == amount, "Sent ETH must match the specified amount");
+
+        receiver.transfer(amount);
         transactionCount += 1;
         transactions.push(TransferStruct(msg.sender, receiver, amount, message, block.timestamp, keyword));
 

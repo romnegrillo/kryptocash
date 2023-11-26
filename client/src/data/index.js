@@ -1,5 +1,5 @@
-import transactions from './Transactions.json';
+import transactions from "./Transactions.json";
 
-export const contractAddress = '0x4d9A04075e989077299e9310Cf2Ae371D6fad261';
+export const contractAddress = "0x90c8e8cF5aaD3Aaf18DeAF46E0381E50F5E09ed0";
 export const transactionsAbi = transactions.abi;
-export const sepoliaAddressLink = 'https://sepolia.etherscan.io/address';
+export const sepoliaAddressLink = "https://sepolia.etherscan.io/address";

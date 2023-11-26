@@ -14,6 +14,7 @@ const Hero = () => {
     formData,
     handleFormChange,
     sendTransaction,
+    currentEthBalance,
   } = useContext(TransactionsContext);
 
   const handleSubmit = (e) => {
@@ -83,9 +84,15 @@ const Hero = () => {
 
       <div className="relative flex w-full flex-1 flex-col items-center">
         <div className="eth-card white-glassmorphism mb-12 flex h-[230px] w-full  max-w-md flex-col justify-between rounded-lg border md:w-96">
-          <div className="flex h-10 w-full justify-between px-4 py-2 ">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border p-2">
-              <SiEthereum className="h-12 w-12 text-white" />
+          <div className="flex h-14 w-full justify-between px-4 py-2 ">
+            <div className="flex items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border p-2">
+                <SiEthereum className="h-12 w-12 text-white" />
+              </div>
+
+              <p className="ml-2 font-bold text-white">
+                {Number(currentEthBalance).toFixed(4)} ETH
+              </p>
             </div>
 
             <BsInfoCircle className="h-6 w-6 text-white" />

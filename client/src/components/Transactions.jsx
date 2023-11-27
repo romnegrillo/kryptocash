@@ -1,4 +1,5 @@
 import { useContext } from "react";
+
 import { TransactionsContext } from "../context/TransactionsContext";
 
 import { walletNotConnected } from "../assets/images";
@@ -10,7 +11,10 @@ const Transactions = () => {
   const { currentAccount, transactions } = useContext(TransactionsContext);
 
   return (
-    <section className="gradient-bg-transactions min-h-[400px] p-8">
+    <section
+      className="gradient-bg-transactions min-h-[400px] p-8"
+      id="transactions"
+    >
       <h3 className="mb-12 text-center text-5xl text-white">Transactions</h3>
 
       <div className="container mx-auto">
@@ -69,6 +73,7 @@ const TransactionCard = ({ transaction }) => {
     transaction;
 
   const gifUrl = useFetch({ keyword: keyword });
+  console.log("keyword", keyword);
 
   return (
     <div className="padding-x padding-y flex w-full max-w-md flex-col rounded-lg bg-[#303031] hover:shadow-2xl">

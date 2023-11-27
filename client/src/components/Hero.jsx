@@ -5,16 +5,20 @@ import { BsInfoCircle } from "react-icons/bs";
 import { Input, Loader } from "./";
 import { TransactionsContext } from "../context/TransactionsContext";
 import shortenAddress from "../utils/shortenAddress";
+import displayToast from "../utils/displayToast";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const Hero = () => {
   const {
     connectWallet,
-    disConnectWallet,
+    disconnectWallet,
     currentAccount,
     formData,
     handleFormChange,
     sendTransaction,
     currentEthBalance,
+    isLoading,
   } = useContext(TransactionsContext);
 
   const handleSubmit = (e) => {
@@ -26,7 +30,7 @@ const Hero = () => {
       return;
     }
 
-    sendTransaction();
+    sendTransaction(displayToast);
   };
 
   return (
@@ -43,7 +47,7 @@ const Hero = () => {
           {!currentAccount && (
             <button
               className="mb-12 block w-full cursor-pointer rounded-full bg-[#2952e3] px-8 py-4 font-bold text-white hover:bg-[#2546bd] lg:hidden"
-              onClick={connectWallet}
+              onClick={() => connectWallet(displayToast)}
             >
               Connect Wallet
             </button>
@@ -52,7 +56,7 @@ const Hero = () => {
           {currentAccount && (
             <button
               className="mb-12 block w-full cursor-pointer rounded-full bg-[#2952e3] px-8 py-4 font-bold text-white hover:bg-[#2546bd] lg:hidden"
-              onClick={disConnectWallet}
+              onClick={() => disconnectWallet(displayToast)}
             >
               {shortenAddress(currentAccount)}
             </button>
@@ -115,30 +119,34 @@ const Hero = () => {
             type="text"
             placeholder="Address To"
             name="addressTo"
+            value={formData.addressTo}
             onChange={handleFormChange}
           />
           <Input
             type="number"
             placeholder="Amount (ETH)"
             name="amount"
+            value={formData.amount}
             onChange={handleFormChange}
           />
           <Input
             type="text"
-            placeholder="Keyword"
+            placeholder="GIF Keyword"
             name="keyword"
+            value={formData.keyword}
             onChange={handleFormChange}
           />
           <Input
             type="text"
             placeholder="Enter Messages"
             name="message"
+            value={formData.message}
             onChange={handleFormChange}
           />
 
           <div className="my-2 h-[1px] w-full bg-gray-400" />
 
-          {false ? (
+          {isLoading ? (
             <Loader />
           ) : (
             <button

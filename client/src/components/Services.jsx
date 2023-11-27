@@ -4,7 +4,7 @@ import { RiHeart2Fill } from "react-icons/ri";
 
 const Services = () => {
   return (
-    <section className="gradient-bg-services">
+    <section className="gradient-bg-services" id="services">
       <div className="padding-x max-container mx-auto flex flex-col py-24 ">
         <div className="mb-16 flex flex-1 items-center justify-center">
           <h2 className="text-5xl text-white">

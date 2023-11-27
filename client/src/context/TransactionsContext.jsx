@@ -18,14 +18,14 @@ const TransactionsProvider = ({ children }) => {
     keyword: "",
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   console.log(currentEthBalance);
 
   // Connect to Metamask.
-  const connectWallet = async () => {
+  const connectWallet = async (displayToast) => {
     if (window.ethereum) {
       try {
-        // TODO: Convert into using ethers, not window.ethereum.
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
@@ -34,22 +34,38 @@ const TransactionsProvider = ({ children }) => {
         updateBalance();
         initializeEthers();
       } catch (error) {
+        if (error.code === -32002) {
+          displayToast("Pending connection detected.", "error");
+          return;
+        } else if (error.code === 4001) {
+          displayToast("Wallet connection canceled.", "error");
+        } else {
+          displayToast("Wallet connection error occured.", "error");
+        }
+
         console.error("Error connecting to Metamask", error);
       }
     } else {
       console.error("Ethereum object not found, install Metamask.");
+      displayToast("MetaMask not detected.", "error");
     }
   };
 
   // Disconnect Metamask.
-  const disConnectWallet = async () => {
+  const disconnectWallet = async (displayToast) => {
+    displayToast("Wallet can only be fully disconnected on MetaMask.", "info");
+    clearWalletStates();
+  };
+
+  // Clear wallet states when disconnected.
+  // Actual disconnection is done on Metamask
+  // and we have no control over it.
+  const clearWalletStates = () => {
     setProvider(null);
     setSigner(null);
     setCurrentAccount(null);
-    updateBalance(0);
+    updateBalance();
     setContract(null);
-
-    alert("To full disconnect your wallet, do it in MetaMask.");
   };
 
   // Initialize Ethers.
@@ -86,11 +102,13 @@ const TransactionsProvider = ({ children }) => {
           keyword: transaction.keyword,
         }));
 
-        const filteredTransactions = structuredTransactions.filter(
-          (transaction) =>
-            transaction.addressFrom.trim().toLowerCase() ===
-            currentAccount.trim().toLowerCase(),
-        );
+        const filteredTransactions = structuredTransactions
+          .filter(
+            (transaction) =>
+              transaction.addressFrom.trim().toLowerCase() ===
+              currentAccount.trim().toLowerCase(),
+          )
+          .reverse();
 
         setTransactions(filteredTransactions);
       }
@@ -100,20 +118,22 @@ const TransactionsProvider = ({ children }) => {
   }, [contract]);
 
   // Contract Function: sendTransaction.
-  const sendTransaction = async () => {
+  const sendTransaction = async (displayToast) => {
     if (!contract) return;
     const { addressTo, amount, keyword, message } = formData;
     const parsedAmount = ethers.parseEther(amount); // ETH to Wei.
 
     try {
       // On old smart contract, the sending of transaction is not included.
-      // It is a separate function call on Metamask it self.
+      // It is a separate function call on Metamask itself.
       // I already updated the smart contract to include this so it won't be used.
+
       // await signer.sendTransaction({
       //   to: addressTo,
       //   value: parsedAmount,
       // });
 
+      setIsLoading(true);
       const transactionHash = await contract.addToBlockchain(
         addressTo,
         parsedAmount,
@@ -131,8 +151,13 @@ const TransactionsProvider = ({ children }) => {
       console.log("Transaction success.");
 
       await getAllTransactions();
+      setIsLoading(false);
+      clearForm();
+      displayToast("Transaction success.", "success");
     } catch (error) {
       console.error("Error sending transaction", error);
+      setIsLoading(false);
+      displayToast("Transaction canceled/failed.", "error");
     }
   };
 
@@ -184,6 +209,16 @@ const TransactionsProvider = ({ children }) => {
     }));
   };
 
+  const clearForm = () => {
+    console.log("Clear form data.");
+    setFormData({
+      addressTo: "",
+      amount: "",
+      keyword: "",
+      message: "",
+    });
+  };
+
   // Handle Metamask account change.
   useEffect(() => {
     if (window.ethereum) {
@@ -194,7 +229,7 @@ const TransactionsProvider = ({ children }) => {
           updateBalance();
           await initializeEthers(); // Await initializeEthers.
         } else {
-          disConnectWallet();
+          clearWalletStates();
         }
       });
 
@@ -232,7 +267,7 @@ const TransactionsProvider = ({ children }) => {
         updateBalance();
         initializeEthers();
       } else {
-        disConnectWallet();
+        clearWalletStates();
       }
     });
 
@@ -253,7 +288,7 @@ const TransactionsProvider = ({ children }) => {
     <TransactionsContext.Provider
       value={{
         connectWallet,
-        disConnectWallet,
+        disconnectWallet,
         currentAccount,
         sendTransaction,
         formData,
@@ -262,6 +297,7 @@ const TransactionsProvider = ({ children }) => {
         transactions,
         getAllTransactions,
         getTransactionCount,
+        isLoading,
       }}
     >
       {children}

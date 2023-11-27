@@ -1,8 +1,14 @@
 import { logo } from "../assets/images";
 
+const footerLinks = [
+  { label: "Home", link: "#home" },
+  { label: "Transactions", link: "#transactions" },
+  { label: "Services", link: "#services" },
+];
+
 const Footer = () => {
   return (
-    <footer className="gradient-bg-footer p-4 pb-20">
+    <footer className="gradient-bg-footer p-4 pb-20" id="footer">
       <div className="container mx-auto">
         <div className="border-t-2"></div>
         <div className="mb-4 flex flex-col items-center justify-evenly p-4 md:mb-0 md:flex-row">
@@ -10,15 +16,13 @@ const Footer = () => {
             <img src={logo} alt="logo" className="w-32" />
           </div>
           <div className="flex flex-1 justify-between gap-16">
-            <p className="cursor-pointer text-lg font-semibold text-white">
-              Home
-            </p>
-            <p className="cursor-pointer text-lg font-semibold text-white">
-              Transactions
-            </p>
-            <p className="cursor-pointer text-lg font-semibold text-white">
-              Services
-            </p>
+            {footerLinks.map((footerLink, index) => (
+              <a href={footerLink.link} key={index} className="cursor-pointer">
+                <p className="cursor-pointer text-lg font-semibold text-white">
+                  {footerLink.label}
+                </p>
+              </a>
+            ))}
           </div>
         </div>
         <div className="flex flex-col items-center justify-center">

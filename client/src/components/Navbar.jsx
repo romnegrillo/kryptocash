@@ -3,12 +3,18 @@ import { useState, useContext } from "react";
 import { TransactionsContext } from "../context/TransactionsContext";
 
 import shortenAddress from "../utils/shortenAddress";
+import displayToast from "../utils/displayToast";
 
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 import { logo } from "../assets/images";
+import "react-toastify/dist/ReactToastify.css";
 
-const navLinks = ["Home", "Transactions", "Services"];
+const navLinks = [
+  { label: "Home", link: "#home" },
+  { label: "Transactions", link: "#transactions" },
+  { label: "Services", link: "#services" },
+];
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -16,7 +22,10 @@ const Navbar = () => {
     useContext(TransactionsContext);
 
   return (
-    <nav className="max-container padding-x mx-auto flex items-center justify-between py-2">
+    <nav
+      className="max-container padding-x mx-auto flex items-center justify-between py-2"
+      id="home"
+    >
       <div className="flex cursor-pointer items-center justify-center text-white">
         <div className="w-24">
           <img src={logo} alt="logo" className="w-full" />
@@ -26,16 +35,16 @@ const Navbar = () => {
 
       <ul className="hidden items-center justify-center gap-8 text-lg font-semibold text-white lg:flex">
         {navLinks.map((navLink, index) => (
-          <li key={index} className="cursor-pointer">
-            {navLink}
-          </li>
+          <a href={navLink.link} key={index} className="cursor-pointer">
+            <li className="cursor-pointer">{navLink.label}</li>
+          </a>
         ))}
 
         {!currentAccount && (
           <li>
             <button
               className="hidden w-full cursor-pointer rounded-full bg-[#2952e3] px-4 py-2 font-semibold text-white hover:bg-[#2546bd] lg:block"
-              onClick={connectWallet}
+              onClick={() => connectWallet(displayToast)}
             >
               Connect Wallet
             </button>
@@ -46,7 +55,7 @@ const Navbar = () => {
           <li>
             <button
               className="hidden w-full cursor-pointer rounded-full bg-[#2952e3] px-4 py-2 font-semibold text-white hover:bg-[#2546bd] lg:block"
-              onClick={disconnectWallet}
+              onClick={() => disconnectWallet(displayToast)}
             >
               {shortenAddress(currentAccount)}
             </button>
@@ -69,9 +78,9 @@ const Navbar = () => {
           />
 
           {navLinks.map((navLink, index) => (
-            <li key={index} className="my-8 cursor-pointer">
-              {navLink}
-            </li>
+            <a href={navLink.link} key={index} className="cursor-pointer">
+              <li className="my-8 cursor-pointer">{navLink.label}</li>
+            </a>
           ))}
         </ul>
       )}
